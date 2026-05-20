@@ -40,12 +40,12 @@ namespace AppCsTp2Pwm
 
         public Form1()
         {
-            InitializeComponent(); // Initialise les composants graphiques
-            string[] ports = SerialPort.GetPortNames(); // Récupère les ports COM disponibles
-            cboPortNames.Items.AddRange(ports); // Affiche dans la liste déroulante
+            InitializeComponent();                                 // Initialise les composants graphiques
+            string[] ports = SerialPort.GetPortNames();            // Récupère les ports COM disponibles
+            cboPortNames.Items.AddRange(ports);                    // Affiche dans la liste déroulante
             if (ports.Length > 0) cboPortNames.SelectedIndex = 0;
             lstDataIn.Items.Clear();
-            myDelegate = new ReceiverD(DispInListRxData); // Associe méthode de réception
+            myDelegate = new ReceiverD(DispInListRxData);          // Associe méthode de réception
         }
 
         // Affiche un message TX dans la ListBox et conserve 10 derniers
@@ -106,9 +106,9 @@ namespace AppCsTp2Pwm
         private void btOpenClose_Click(object sender, EventArgs e)
         {
             string[] availablePorts = SerialPort.GetPortNames();
-            if (!availablePorts.Contains(serialPort1.PortName))
+            if (!availablePorts.Contains(serialPort1.PortName))        //Test de si le port est disponible
             {
-                MessageBox.Show($"Le port {serialPort1.PortName} n'existe pas sur ce système.", "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show($"Le port sélectionné n'existe pas sur ce système.", "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
             else
             {
@@ -193,7 +193,7 @@ namespace AppCsTp2Pwm
         private void btSend_Click(object sender, EventArgs e)
         {
             string[] availablePorts = SerialPort.GetPortNames();
-            if (!availablePorts.Contains(serialPort1.PortName))
+            if (!availablePorts.Contains(serialPort1.PortName))            //Test de si le port est disponible
             {
                 MessageBox.Show($"Le port {serialPort1.PortName} n'existe pas sur ce système.", "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
@@ -224,7 +224,7 @@ namespace AppCsTp2Pwm
         private void Send_Cycle_Bt_Click(object sender, EventArgs e)
         {
             string[] availablePorts = SerialPort.GetPortNames();
-            if (!availablePorts.Contains(serialPort1.PortName))
+            if (!availablePorts.Contains(serialPort1.PortName))            //Test de si le port est disponible
             {
                 MessageBox.Show($"Le port {serialPort1.PortName} n'existe pas sur ce système.", "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
@@ -287,26 +287,27 @@ namespace AppCsTp2Pwm
             }
         }
 
-        private void Frequency_Value_Changed(object sender, EventArgs e)
+        private void Frequency_Value_Changed(object sender, EventArgs e)            
         {
-            nudFrequence.Value = RoundToStep(nudFrequence.Value, step_freq);
+            nudFrequence.Value = RoundToStep(nudFrequence.Value, step_freq);            //Arrondi la valeur de la fréquence à la valeur d'une step
         }
 
         private void Amplitude_Value_Changed(object sender, EventArgs e)
         {
-            nudAmplitude.Value = RoundToStep(nudAmplitude.Value, step_offset_amp);
+            nudAmplitude.Value = RoundToStep(nudAmplitude.Value, step_offset_amp);      //Arrondi la valeur de l'Amplitude à la valeur d'une step
 
         }
 
         private void Offset_Value_Changed(object sender, EventArgs e)
         {
-            nudOffset.Value = RoundToStep(nudOffset.Value, step_offset_amp);
+            nudOffset.Value = RoundToStep(nudOffset.Value, step_offset_amp);            //Arrondi la valeur de l'offset à la valeur d'une step
         }
         private decimal RoundToStep(decimal value, decimal step)
         {
-            return Math.Round(value / step) * step;
+            return Math.Round(value / step) * step;                                     //Calcule pour avoir la bonne valeur de l'arrondi
         }
-        public class SerialPortHelper
+        //Précédente tentative de régler le problème du port com pas disponible
+        /*public class SerialPortHelper
         {
             public static bool IsPortAvailable(string portName)
             {
@@ -342,7 +343,7 @@ namespace AppCsTp2Pwm
                     }
                 }
             }
-        }
+        }*/
     }
    
 
