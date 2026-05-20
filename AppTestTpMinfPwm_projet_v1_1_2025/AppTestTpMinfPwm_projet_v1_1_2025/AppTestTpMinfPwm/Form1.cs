@@ -48,7 +48,7 @@ namespace AppCsTp2Pwm
             myDelegate = new ReceiverD(DispInListRxData);          // Associe méthode de réception
         }
 
-        // Affiche un message TX dans la ListBox et conserve 10 derniers
+        // Affiche un message TX dans la ListBox et conserve les 10 derniers messages
         void DispTxMess(string message)
         {
             lstDataOut.Items.Add(message);
@@ -102,7 +102,7 @@ namespace AppCsTp2Pwm
             }
         }
 
-        // Ouvre ou ferme le port série
+        //Ouverture ou fermeture du port série
         private void btOpenClose_Click(object sender, EventArgs e)
         {
             string[] availablePorts = SerialPort.GetPortNames();
@@ -114,14 +114,14 @@ namespace AppCsTp2Pwm
             {
                 if (!serialPort1.IsOpen)
                 {
-                    // Paramètres de communication
+                    //Paramètres de communication
                     serialPort1.PortName = (string)cboPortNames.SelectedItem;
 
                     try
                     {
-                        serialPort1.Open(); // ouverture du port
-                        btOpenClose.Text = "Close";
-                        gbTx.Enabled = true;
+                        serialPort1.Open();             //Ouverture du port
+                        btOpenClose.Text = "Close";     //Changement du text sur le bouton
+                        gbTx.Enabled = true;            //"Ouverture" de la zone des paramètres du signel pour séléctionner lesdits paramètres
                         cboPortNames.Enabled = false;
                     }
                     catch (Exception ex)
@@ -131,9 +131,9 @@ namespace AppCsTp2Pwm
                 }
                 else
                 {
-                    serialPort1.Close(); // fermeture
-                    btOpenClose.Text = "Open";
-                    gbTx.Enabled = false;
+                    serialPort1.Close();             //Fermeture du port
+                    btOpenClose.Text = "Open";       //Changement du text sur le bouton
+                    gbTx.Enabled = false;            //"Fermeture" de la zone des paramètres du signel pour séléctionner lesdits paramètres
                     cboPortNames.Enabled = true;
                     timer1.Stop();
                 }
@@ -144,10 +144,10 @@ namespace AppCsTp2Pwm
         // Déclenché automatiquement quand des données arrivent sur le port série
         private void serialPort1_DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
-            lstDataIn.BeginInvoke(myDelegate); // appel en thread UI
+            lstDataIn.BeginInvoke(myDelegate);            //Appel en thread UI
         }
 
-        // Affiche la trame reçue dans la liste RX
+        //Affiche la trame reçue dans la liste RX
         public void DispInListRxData()
         {
             byte[] buffer = new byte[1024];
@@ -162,7 +162,7 @@ namespace AppCsTp2Pwm
 
                 if (bytesRead > 0)
                 {
-                    int startIndex = Array.IndexOf(buffer, stx, 0, bytesRead); // cherche '!'
+                    int startIndex = Array.IndexOf(buffer, stx, 0, bytesRead);         //Recherche le charactère '!'
                     if (startIndex >= 0)
                     {
                         for (int i = startIndex; i < bytesRead && buffer[i] != '#'; i++)
@@ -189,7 +189,7 @@ namespace AppCsTp2Pwm
             }
         }
 
-        // Bouton pour envoyer une seule trame
+        //Bouton pour envoyer une seule trame
         private void btSend_Click(object sender, EventArgs e)
         {
             string[] availablePorts = SerialPort.GetPortNames();
@@ -197,8 +197,8 @@ namespace AppCsTp2Pwm
             {
                 MessageBox.Show($"Le port {serialPort1.PortName} n'existe pas sur ce système.", "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
-            m_SendCount = 0;
-            SendMessage(m_SendCount);
+            m_SendCount = 0;                                                //Remise à zéro de la variable count
+            SendMessage(m_SendCount);                                       //Envoie d'une trame
 
             if (timer1.Enabled)
             {
@@ -206,7 +206,7 @@ namespace AppCsTp2Pwm
             }
         }
 
-        // Envoi automatique toutes les X ms si activé
+        //Si activé envoi automatique de tramme à interval régulier
         private void timer1_Tick(object sender, EventArgs e)
         {
             if (serialPort1.IsOpen)
@@ -250,10 +250,10 @@ namespace AppCsTp2Pwm
                 isSaveMode_On_Or_Off = true;
                 btSave.Text = "Saved";
                 gbRx.Enabled = true;
-                SavedForme.Text = cboFormes.Text;
-                SavedFrequence.Text = nudFrequence.Text;
-                SavedAmplitude.Text = nudAmplitude.Text;
-                SavedOffset.Text = nudOffset.Text;
+                SavedForme.Text = cboFormes.Text;                    //Affichage de la forme dans le bloc de text "Forme" de l'espace Rx
+                SavedFrequence.Text = nudFrequence.Text;             //Affichage de la valeur de la fréquence dans le bloc de text "Fréquence" de l'espace Rx
+                SavedAmplitude.Text = nudAmplitude.Text;             //Affichage de la valeur de l'amplitude dans le bloc de text "Fréquence" de l'espace Rx
+                SavedOffset.Text = nudOffset.Text;                   //Affichage de la valeur de l'offset dans le bloc de text "Fréquence" de l'espace Rx
             }
             else
             {
