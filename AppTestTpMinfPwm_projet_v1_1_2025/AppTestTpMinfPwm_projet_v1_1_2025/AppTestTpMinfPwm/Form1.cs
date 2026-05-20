@@ -31,7 +31,7 @@ namespace AppCsTp2Pwm
         public ReceiverD myDelegate;
 
         private int m_SendCount = 0;
-        private const byte stx = 0x21;  // caractère de début de trame ('!')
+        private const byte stx = 0x21;                              //Caractère indicant le début de trame ('!')
 
         private SendSignal signal = new SendSignal();
 
@@ -48,7 +48,7 @@ namespace AppCsTp2Pwm
             myDelegate = new ReceiverD(DispInListRxData);          // Associe méthode de réception
         }
 
-        // Affiche un message TX dans la ListBox et conserve les 10 derniers messages
+        //Affiche un message TX dans la ListBox et conserve les 10 derniers messages
         void DispTxMess(string message)
         {
             lstDataOut.Items.Add(message);
@@ -56,7 +56,7 @@ namespace AppCsTp2Pwm
                 lstDataOut.Items.RemoveAt(0);
         }
 
-        // Compose la trame à envoyer en remplissant les propriétés de SendSignal
+        //Compose la trame à envoyer en remplissant les propriétés de SendSignal
         void ComposeMessage()
         {
             signal.FormeIndex = cboFormes.SelectedIndex;
@@ -102,44 +102,36 @@ namespace AppCsTp2Pwm
             }
         }
 
-        //Ouverture ou fermeture du port série
+        // Ouvre ou ferme le port série
         private void btOpenClose_Click(object sender, EventArgs e)
         {
-            string[] availablePorts = SerialPort.GetPortNames();
-            if (!availablePorts.Contains(serialPort1.PortName))        //Test de si le port est disponible
+            if (!serialPort1.IsOpen)    //Ouverture du port
             {
-                MessageBox.Show($"Le port sélectionné n'existe pas sur ce système.", "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            }
-            else
-            {
-                if (!serialPort1.IsOpen)
-                {
-                    //Paramètres de communication
-                    serialPort1.PortName = (string)cboPortNames.SelectedItem;
+                // Paramètres de communication
+                serialPort1.PortName = (string)cboPortNames.SelectedItem;
 
-                    try
-                    {
-                        serialPort1.Open();             //Ouverture du port
-                        btOpenClose.Text = "Close";     //Changement du text sur le bouton
-                        gbTx.Enabled = true;            //"Ouverture" de la zone des paramètres du signel pour séléctionner lesdits paramètres
-                        cboPortNames.Enabled = false;
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show(ex.ToString(), "Erreur à l'ouverture du port !", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
-                }
-                else
+                try
                 {
-                    serialPort1.Close();             //Fermeture du port
-                    btOpenClose.Text = "Open";       //Changement du text sur le bouton
-                    gbTx.Enabled = false;            //"Fermeture" de la zone des paramètres du signel pour séléctionner lesdits paramètres
-                    cboPortNames.Enabled = true;
-                    timer1.Stop();
+                    serialPort1.Open();
+                    gbTx.Enabled = true;
+                    btOpenClose.Text = "Close";
+                    cboPortNames.Enabled = false;
+                }
+                catch (Exception ex)
+                {
+                    if (!serialPort1.IsOpen)
+                        //MessageBox.Show(ex.ToString(), "Erreur à l'ouverture du port !", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show("Erreur à l'ouverture du port !", "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
-            
-        }
+            else //fermeture
+            {
+                serialPort1.Close();        //Fermeture du port
+                gbTx.Enabled = false;
+                btOpenClose.Text = "Open";
+                cboPortNames.Enabled = true;
+            }
+        } 
 
         // Déclenché automatiquement quand des données arrivent sur le port série
         private void serialPort1_DataReceived(object sender, SerialDataReceivedEventArgs e)
@@ -216,8 +208,8 @@ namespace AppCsTp2Pwm
             }
             else
             {
-                btOpenClose.Text = "Open";
                 gbTx.Enabled = false;
+                btOpenClose.Text = "Open";
             }
         }
 
@@ -248,8 +240,8 @@ namespace AppCsTp2Pwm
             {
                 btSaveValue = true;
                 isSaveMode_On_Or_Off = true;
-                btSave.Text = "Saved";
                 gbRx.Enabled = true;
+                btSave.Text = "Saved";
                 SavedForme.Text = cboFormes.Text;                    //Affichage de la forme dans le bloc de text "Forme" de l'espace Rx
                 SavedFrequence.Text = nudFrequence.Text;             //Affichage de la valeur de la fréquence dans le bloc de text "Fréquence" de l'espace Rx
                 SavedAmplitude.Text = nudAmplitude.Text;             //Affichage de la valeur de l'amplitude dans le bloc de text "Fréquence" de l'espace Rx
@@ -259,8 +251,9 @@ namespace AppCsTp2Pwm
             {
                 btSaveValue = false;
                 isSaveMode_On_Or_Off = false;
-                btSave.Text = "Not Saved";
                 gbRx.Enabled = false;
+                btSave.Text = "Not Saved";
+
             }
         }
 
